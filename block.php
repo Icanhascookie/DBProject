@@ -22,9 +22,9 @@ else{
 <head><title>Block</title><head>
 <body><h1>Block</h1>
 	<form method=post action="block.php">
-		Block pallet with this type of cookie:<br>
+		Block/Unblock pallet with this type of cookie:<br>
 		<input type="text" name="cName"><br>
-		Time interval: <br>
+		<b>Time interval:</b> <br>
 		from (yyyy-mm-dd):<br>
 		<input type="datetime" name="startDate"><br>
 		to (yyyy-mm-dd):<br>
