@@ -16,6 +16,7 @@
 <body><h1 align = "center">Search Results</h1>
         <?php
                        //Nice print code here
+					
          ?>
 
 <p>
