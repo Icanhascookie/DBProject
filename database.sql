@@ -25,7 +25,7 @@ CREATE TABLE Cookie (
 
 CREATE TABLE Ingredient (
     name VARCHAR(50) NOT NULL,
-    amount FLOAT,
+    amount INT,
     PRIMARY KEY (name)
 );
 
@@ -40,7 +40,7 @@ CREATE TABLE Orders (
 CREATE TABLE Recepie (
     cookieName VARCHAR(50) NOT NULL,
 	ingredientName VARCHAR(50) NOT NULL,
-    amountUsed FLOAT,
+    amountUsed INT,
     FOREIGN KEY (cookieName) REFERENCES Cookie(name),
 	FOREIGN KEY (ingredientName) REFERENCES Ingredient(name)
 );
@@ -48,7 +48,7 @@ CREATE TABLE Recepie (
 CREATE TABLE IngredientPurchase (
     ingredientName VARCHAR(50) NOT NULL,
 	time DATE NOT NULL,
-    quantity FLOAT,
+    quantity INT,
     FOREIGN KEY (ingredientName) REFERENCES Ingredient(name)
 );
 
