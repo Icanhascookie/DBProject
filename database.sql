@@ -78,6 +78,7 @@ INSERT INTO Customer values('Kaffebrod AB', 'Landskrona');
 INSERT INTO Customer values('Bjudkakor AB', 'Ystad');
 INSERT INTO Customer values('Kalaskakor AB', 'Trelleborg');
 INSERT INTO Customer values('Partykakor AB', 'Kristianstad');
+
 INSERT INTO Cookie values('Nut ring');
 INSERT INTO Cookie values('Nut cookie');
 INSERT INTO Cookie values('Amneris');
@@ -115,3 +116,23 @@ INSERT INTO Recepie values('Berliner', 'Icing sugar', 100);
 INSERT INTO Recepie values('Berliner', 'Eggs', 50);
 INSERT INTO Recepie values('Berliner', 'Vanilla sugar', 5);
 INSERT INTO Recepie values('Berliner', 'Chocolate', 50);
+
+INSERT INTO Ingredient values('Flour', '250000');
+INSERT INTO Ingredient values('Butter', '250000');
+INSERT INTO Ingredient values('Icing sugar', '250000');
+INSERT INTO Ingredient values('Roasted, chopped nuts', '250000');
+INSERT INTO Ingredient values('Fine-ground nuts', '250000');
+INSERT INTO Ingredient values('Ground, roasted nuts', '250000');
+INSERT INTO Ingredient values('Bread crumbs', '250000');
+INSERT INTO Ingredient values('Egg whites', '20000');
+INSERT INTO Ingredient values('Chocolate', '25000');
+INSERT INTO Ingredient values('Marzipan', '500000');
+INSERT INTO Ingredient values('Eggs', '250000');
+INSERT INTO Ingredient values('Potato starch', '20000');
+INSERT INTO Ingredient values('Wheat flour', '20000');
+INSERT INTO Ingredient values('Sodium bicarbonate', '25000');
+INSERT INTO Ingredient values('Vanilla', '25000');
+INSERT INTO Ingredient values('Chopped almonds', '250000');
+INSERT INTO Ingredient values('Cinnamon', '20000');
+INSERT INTO Ingredient values('Vanilla sugar', '25000');
+
