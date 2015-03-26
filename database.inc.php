@@ -61,4 +61,15 @@ class Database {
 		}
 	}
 	//Add Functions
+	
+	public function block($cookieName, $startDate, $endDate){
+        $sql = "UPDATE Pallet SET isBlocked=1 WHERE cookieName=$cookieName AND productionDate BETWEEN $startDate AND $endDate" ;
+        $result = $this->executeUpdate($sql, array($cookieName, $startDate, $endDate));
+	return $result;
+	}
+	public function unblock($cookieName, $startDate, $endDate){
+        $sql = "UPDATE Pallet SET isBlocked=0 WHERE cookieName=$cookieName AND productionDate BETWEEN $startDate AND $endDate" ;
+        $result = $this->executeUpdate($sql, array($cookieName, $startDate, $endDate));
+	return $result;
+	}
 }?>
