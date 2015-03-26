@@ -1,0 +1,1 @@
+UPDATE Pallet SET isBlocked=1 WHERE productionDate BETWEEN $startDate AND $endDate
