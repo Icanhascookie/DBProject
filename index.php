@@ -27,5 +27,21 @@
 <form method = post action = "listIngredients.php">
 	<input type=submit value="List available ingredients">
 </form>
+
+<form method = post action = "cookierecipes.php">
+	<input type=submit value="List available ingredients">
+</form>
+
+<form method = post action = "block.php">
+	<input type=submit value="List available ingredients">
+</form>
+
+<form method = post action = "placeorder.php">
+	<input type=submit value="List available ingredients">
+</form>
+
+<form method = post action = "search.php">
+	<input type=submit value="List available ingredients">
+</form>
 </body>
 </html>
