@@ -84,3 +84,8 @@ INSERT INTO Cookie values('Amneris');
 INSERT INTO Cookie values('Tango');
 INSERT INTO Cookie values('Almond delight');
 INSERT INTO Cookie values('Berliner');
+INSERT INTO Recepie values('Nut ring', 'Flour', 450);
+INSERT INTO Recepie values('Nut ring', 'Butter', 450);
+INSERT INTO Recepie values('Nut ring', 'Icing sugar', 190);
+INSERT INTO Recepie values('Nut ring', 'Roasted, chopped nuts', 225);
+
