@@ -63,7 +63,7 @@ CREATE TABLE OrderQuantity (
 CREATE TABLE Pallet (
     palletID INT auto_increment,
     cookieName VARCHAR(50) NOT NULL,
-	purchaseDate DATE,
+	productionDate DATE,
 	deliveredDate DATE,
 	isBlocked INT NOT NULL,
 	orderNbr INT,
@@ -104,36 +104,36 @@ INSERT INTO Ingredient values('Chopped almonds', '250000');
 INSERT INTO Ingredient values('Sugar', '250000');
 INSERT INTO Ingredient values('Cinnamon', '20000');
 INSERT INTO Ingredient values('Vanilla sugar', '25000');
-INSERT INTO Recepie values('Nut ring', 'Flour', 450);
-INSERT INTO Recepie values('Nut ring', 'Butter', 450);
-INSERT INTO Recepie values('Nut ring', 'Icing sugar', 190);
-INSERT INTO Recepie values('Nut ring', 'Roasted, chopped nuts', 225);
-INSERT INTO Recepie values('Nut cookie', 'Fine-ground nuts', 750);
-INSERT INTO Recepie values('Nut cookie', 'Ground, roasted nuts', 625);
-INSERT INTO Recepie values('Nut cookie', 'Bread crumbs', 125);
-INSERT INTO Recepie values('Nut cookie', 'Sugar', 375);
-INSERT INTO Recepie values('Nut cookie', 'Egg whites', 35);
-INSERT INTO Recepie values('Nut cookie', 'Chocolate', 50);
-INSERT INTO Recepie values('Amneris', 'Marzipan', 750);
-INSERT INTO Recepie values('Amneris', 'Butter', 250);
-INSERT INTO Recepie values('Amneris', 'Eggs', 250);
-INSERT INTO Recepie values('Amneris', 'Potato starch', 25);
-INSERT INTO Recepie values('Amneris', 'Wheat flour', 25);
-INSERT INTO Recepie values('Tango', 'Butter', 200);
-INSERT INTO Recepie values('Tango', 'Sugar', 250);
-INSERT INTO Recepie values('Tango', 'Flour', 300);
-INSERT INTO Recepie values('Tango', 'Sodium bicarbonate', 4);
-INSERT INTO Recepie values('Tango', 'Vanilla', 2);
-INSERT INTO Recepie values('Almond delight', 'Butter', 400);
-INSERT INTO Recepie values('Almond delight', 'Sugar', 270);
-INSERT INTO Recepie values('Almond delight', 'Chopped almonds', 279);
-INSERT INTO Recepie values('Almond delight', 'Flour', 400);
-INSERT INTO Recepie values('Almond delight', 'Cinnamon', 10);
-INSERT INTO Recepie values('Berliner', 'Flour', 350);
-INSERT INTO Recepie values('Berliner', 'Butter', 250);
-INSERT INTO Recepie values('Berliner', 'Icing sugar', 100);
-INSERT INTO Recepie values('Berliner', 'Eggs', 50);
-INSERT INTO Recepie values('Berliner', 'Vanilla sugar', 5);
-INSERT INTO Recepie values('Berliner', 'Chocolate', 50);
+INSERT INTO Recipe values('Nut ring', 'Flour', 450);
+INSERT INTO Recipe values('Nut ring', 'Butter', 450);
+INSERT INTO Recipe values('Nut ring', 'Icing sugar', 190);
+INSERT INTO Recipe values('Nut ring', 'Roasted, chopped nuts', 225);
+INSERT INTO Recipe values('Nut cookie', 'Fine-ground nuts', 750);
+INSERT INTO Recipe values('Nut cookie', 'Ground, roasted nuts', 625);
+INSERT INTO Recipe values('Nut cookie', 'Bread crumbs', 125);
+INSERT INTO Recipe values('Nut cookie', 'Sugar', 375);
+INSERT INTO Recipe values('Nut cookie', 'Egg whites', 35);
+INSERT INTO Recipe values('Nut cookie', 'Chocolate', 50);
+INSERT INTO Recipe values('Amneris', 'Marzipan', 750);
+INSERT INTO Recipe values('Amneris', 'Butter', 250);
+INSERT INTO Recipe values('Amneris', 'Eggs', 250);
+INSERT INTO Recipe values('Amneris', 'Potato starch', 25);
+INSERT INTO Recipe values('Amneris', 'Wheat flour', 25);
+INSERT INTO Recipe values('Tango', 'Butter', 200);
+INSERT INTO Recipe values('Tango', 'Sugar', 250);
+INSERT INTO Recipe values('Tango', 'Flour', 300);
+INSERT INTO Recipe values('Tango', 'Sodium bicarbonate', 4);
+INSERT INTO Recipe values('Tango', 'Vanilla', 2);
+INSERT INTO Recipe values('Almond delight', 'Butter', 400);
+INSERT INTO Recipe values('Almond delight', 'Sugar', 270);
+INSERT INTO Recipe values('Almond delight', 'Chopped almonds', 279);
+INSERT INTO Recipe values('Almond delight', 'Flour', 400);
+INSERT INTO Recipe values('Almond delight', 'Cinnamon', 10);
+INSERT INTO Recipe values('Berliner', 'Flour', 350);
+INSERT INTO Recipe values('Berliner', 'Butter', 250);
+INSERT INTO Recipe values('Berliner', 'Icing sugar', 100);
+INSERT INTO Recipe values('Berliner', 'Eggs', 50);
+INSERT INTO Recipe values('Berliner', 'Vanilla sugar', 5);
+INSERT INTO Recipe values('Berliner', 'Chocolate', 50);
 
 
