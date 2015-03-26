@@ -25,9 +25,9 @@ else{
 		Block pallet with this type of cookie:<br>
 		<input type="text" name="cName"><br>
 		Time interval: <br>
-		from (yyyy-mm-dd hh:mm:ss):<br>
+		from (yyyy-mm-dd):<br>
 		<input type="datetime" name="startDate"><br>
-		to (yyyy-mm-dd hh:mm:ss):<br>
+		to (yyyy-mm-dd):<br>
 		<input type="datetime" name="endDate"><br>
 		<input type=submit name="Block" value="Block">
 		<input type=submit name="Unblock" value="Unblock">
