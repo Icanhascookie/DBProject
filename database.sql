@@ -72,6 +72,10 @@ CREATE TABLE Pallet (
 	FOREIGN KEY (orderNbr) REFERENCES Orders(OrderNbr)
 );
 
-INSERT INTO Customer values('Customer A', 'Location A');
-INSERT INTO Customer values('Customer B', 'Location A');
+INSERT INTO Customer values('Finkakor AB', 'Helsingborg');
+INSERT INTO Customer values('Smabrod AB', 'Malmo');
+INSERT INTO Customer values('Kaffebrod AB', 'Landskrona');
+INSERT INTO Customer values('Bjudkakor AB', 'Ystad');
+INSERT INTO Customer values('Kalaskakor AB', 'Trelleborg');
+INSERT INTO Customer values('Partykakor AB', 'Kristianstad');
 
