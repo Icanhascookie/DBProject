@@ -78,4 +78,7 @@ INSERT INTO Customer values('Kaffebrod AB', 'Landskrona');
 INSERT INTO Customer values('Bjudkakor AB', 'Ystad');
 INSERT INTO Customer values('Kalaskakor AB', 'Trelleborg');
 INSERT INTO Customer values('Partykakor AB', 'Kristianstad');
-
+INSERT INTO Cookie values('CookieA');
+INSERT INTO Cookie values('CookieB');
+INSERT INTO Cookie values('CookieC');
+INSERT INTO Cookie values('CookieD');
