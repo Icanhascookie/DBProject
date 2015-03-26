@@ -14,10 +14,9 @@ else if(isset($_POST['Unblock'])){
 	$db->closeConnection();
 }
 else{
-	echo "invalid form"
+	echo "invalid form";
 }
 }
-
 ?>
 <html>
 <head><title>Block</title><head>
