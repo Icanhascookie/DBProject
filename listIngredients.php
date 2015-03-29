@@ -6,6 +6,9 @@
 	$db->openConnection();
 	
 	$result = $db->getAllIngredients();
+	if($result === FALSE) { 
+		die(mysql_error());
+	}
 	$db->closeConnection();
 
 ?>
@@ -14,10 +17,15 @@
 <head><title>Ingredient List</title><head>
 <body><h1 align = "center">Ingredient Lists</h1>
         <?php
-                       //Nice print code here
-		       foreach($result as $r){
-			echo $r;
-		       }
+	echo '<table class="table table-striped table-bordered table-hover">'; 
+	echo "<tr><th>Name</th><th>Amount:</th></tr>"; 
+        foreach($result as $r){
+		echo "<tr><td>";
+		echo $r['name'];
+		echo "</td><td>";
+		echo $r['amount'];
+		echo "</td></tr>"; 
+	}
 					
          ?>
 

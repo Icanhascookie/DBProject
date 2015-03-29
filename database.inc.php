@@ -75,27 +75,27 @@ class Database {
 	public function deliverPallet($palletID, $deliveredDate){
 	$sql = "UPDATE Pallet SET deliveredDate = ? WHERE palletID = ?";
 	$result = $this->executeUpdate($sql, array($deliveredDate, $palletID));
-	return result;
+	return $result;
 	}
 	public function producePallet($cookieName, $productionDate, $deliveredDate, $orderNbr){
 	$sql = "INSERT INTO Pallet (cookieName, productionDate, deliveredDate, orderNbr) VALUES (?,?,?,?)";
 	$result = $this->executeUpdate($sql, array($cookieName, $productionDate, $deliveredDate, $orderNbr));
-	return result;
+	return $result;
 	}
 	public function getIngredientsForCookie($cookieName){
 	$sql = "SELECT * FROM Recipe WHERE cookieName= ?";
 	$result = $this->executeQuery($sql, array($cookieName));
-	return result;
+	return $result;
 	}
 	public function updateIngredient($ingredient, $newAmount){
 	$sql = "UPDATE Ingredient SET amount = ? WHERE name = ?";
 	$result = $this->executeUpdate($sql, array($newAmount, $ingredient));
-	return result;
+	return $result;
 	}
 	public function getAllIngredients(){
 	$sql = "SELECT * FROM Ingredient";
 	$result = $this->executeQuery($sql);
-	return result;
+	return $result;
 	}
 	//I was thinking we do most of the logic in the php files that call these functions. Not sure if thats a good way to do it.
 }?>
