@@ -6,9 +6,6 @@
 	$db->openConnection();
 	
 	$result = $db->getAllIngredients();
-	if($result === FALSE) { 
-		die(mysql_error());
-	}
 	$db->closeConnection();
 
 ?>
@@ -26,7 +23,7 @@
 		echo $r['amount'];
 		echo "</td></tr>"; 
 	}
-					
+	echo "</table>";
          ?>
 
 <p>

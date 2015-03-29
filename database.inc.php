@@ -97,5 +97,10 @@ class Database {
 	$result = $this->executeQuery($sql);
 	return $result;
 	}
+	public function getCookies(){
+	$sql = "SELECT * FROM Cookie";
+	$result = $this->executeQuery($sql);
+	return $result;
+	}
 	//I was thinking we do most of the logic in the php files that call these functions. Not sure if thats a good way to do it.
 }?>

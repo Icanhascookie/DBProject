@@ -28,20 +28,20 @@
 	<input type=submit value="List available ingredients">
 </form>
 
-<form method = post action = "cookierecipes.php">
-	<input type=submit value="List available ingredients">
+<form method = post action = "listRecipes.php">
+	<input type=submit value="List recipes">
 </form>
 
 <form method = post action = "block.php">
-	<input type=submit value="List available ingredients">
+	<input type=submit value="Block cookies">
 </form>
 
 <form method = post action = "placeorder.php">
-	<input type=submit value="List available ingredients">
+	<input type=submit value="Place order">
 </form>
 
 <form method = post action = "search.php">
-	<input type=submit value="List available ingredients">
+	<input type=submit value="Search">
 </form>
 </body>
 </html>
