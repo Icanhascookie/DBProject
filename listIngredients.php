@@ -5,17 +5,19 @@
 	$db = $_SESSION['db'];
 	$db->openConnection();
 	
-	//$result = $db->functionname();
-	//get list of ingredients here with db function.
+	$result = $db->getAllIngredients();
 	$db->closeConnection();
 
 ?>
 
 <html>
-<head><title>Search Results</title><head>
-<body><h1 align = "center">Search Results</h1>
+<head><title>Ingredient List</title><head>
+<body><h1 align = "center">Ingredient Lists</h1>
         <?php
                        //Nice print code here
+		       foreach($result as $r){
+			echo $r;
+		       }
 					
          ?>
 
@@ -23,4 +25,5 @@
 <form method=post action="index.php">
 	<input type=submit value="Return to main menu">
 </form>
-
+</body>
+</html>
