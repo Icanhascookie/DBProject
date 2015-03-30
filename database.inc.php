@@ -68,8 +68,9 @@ class Database {
 		return $result;
 	}
 	public function unblock($cookieName, $startDate, $endDate){
-        $sql = "UPDATE Pallet SET isBlocked=0 WHERE cookieName=$cookieName AND productionDate BETWEEN $startDate AND $endDate" ;
+        $sql = "UPDATE Pallet SET isBlocked=0 WHERE cookieName=? AND productionDate BETWEEN ? AND ?" ;
         $result = $this->executeUpdate($sql, array($cookieName, $startDate, $endDate));
+		
 		return $result;
 	}
 	public function deliverPallet($palletID, $deliveredDate){
