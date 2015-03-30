@@ -78,8 +78,8 @@ class Database {
 		return $result;
 	}
 	public function producePallet($cookieName, $productionDate, $deliveredDate, $orderNbr){
-		$sql = "INSERT INTO Pallet (cookieName, productionDate, deliveredDate, orderNbr) VALUES (?,?,?,?)";
-		$result = $this->executeUpdate($sql, array($cookieName, $productionDate, $deliveredDate, $orderNbr));
+		$sql = "INSERT INTO Pallet (cookieName, productionDate, deliveredDate, orderNbr) VALUES (?,CURDATE(),?,?)";
+		$result = $this->executeUpdate($sql, array($cookieName, $deliveredDate, $orderNbr));
 		return $result;
 	}
 	public function getIngredientsForCookie($cookieName){
@@ -107,31 +107,20 @@ class Database {
 		$result = $this->executeQuery($sql);
 		return $result;
 	}
-	public function addOrderQuantity($cookieName, $quantity){
-		$sql = "INSERT INTO OrderQuantity (cookieName, orderNbr, quantity) VALUES (?, LAST_INSERT_ID(), ?)";
-		$result = $this->executeUpdate($sql, array($cookieName, $quantity));
-		return $result;
-	}
 	public function order($customerName, $cookieName, $quantity, $deliveryDate){
-	try{
-		echo $customerName;
 		$this->conn->beginTransaction();
 		$sql = "INSERT INTO Orders (orderNbr, customerName, deliveryDate) VALUES (NULL, ?, ?)";
 		$this->executeUpdate($sql, array($customerName, $deliveryDate));
-		if($this->addOrderQuantity($cookieName, $quantity) == false){
-			$this->conn->rollBack();
-			return false;
-		}
-		else{
-			$this->conn->commit();
-			return true;
-		}
-	}catch (PDOException $e) {
-		$error = "*** Internal error: " . $e->getMessage() . "<p>" . $query;
-		die($error);
-		return false;
-        }
-	
+		$last_id = $this->conn->lastInsertId('Orders');
+		$sql = "INSERT INTO OrderQuantity (cookieName, orderNbr, quantity) VALUES (?, LAST_INSERT_ID(), ?)";
+		$result = $this->executeUpdate($sql, array($cookieName, $quantity));
+		return $last_id;
+	}
+
+	public function getOrderNumbers(){
+		$sql = "SELECT orderNbr FROM Orders";
+		$result = $this->executeQuery($sql);
+		return $result;
 	}
 
 	public function getDeliveredDate($status) {
