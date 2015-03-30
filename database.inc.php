@@ -65,52 +65,52 @@ class Database {
 	public function block($cookieName, $startDate, $endDate){
         $sql = "UPDATE Pallet SET isBlocked=1 WHERE cookieName = ? AND productionDate BETWEEN ? AND ?" ;
         $result = $this->executeUpdate($sql, array($cookieName, $startDate, $endDate));
-	return $result;
+		return $result;
 	}
 	public function unblock($cookieName, $startDate, $endDate){
         $sql = "UPDATE Pallet SET isBlocked=0 WHERE cookieName=$cookieName AND productionDate BETWEEN $startDate AND $endDate" ;
         $result = $this->executeUpdate($sql, array($cookieName, $startDate, $endDate));
-	return $result;
+		return $result;
 	}
 	public function deliverPallet($palletID, $deliveredDate){
-	$sql = "UPDATE Pallet SET deliveredDate = ? WHERE palletID = ?";
-	$result = $this->executeUpdate($sql, array($deliveredDate, $palletID));
-	return $result;
+		$sql = "UPDATE Pallet SET deliveredDate = ? WHERE palletID = ?";
+		$result = $this->executeUpdate($sql, array($deliveredDate, $palletID));
+		return $result;
 	}
 	public function producePallet($cookieName, $productionDate, $deliveredDate, $orderNbr){
-	$sql = "INSERT INTO Pallet (cookieName, productionDate, deliveredDate, orderNbr) VALUES (?,?,?,?)";
-	$result = $this->executeUpdate($sql, array($cookieName, $productionDate, $deliveredDate, $orderNbr));
-	return $result;
+		$sql = "INSERT INTO Pallet (cookieName, productionDate, deliveredDate, orderNbr) VALUES (?,?,?,?)";
+		$result = $this->executeUpdate($sql, array($cookieName, $productionDate, $deliveredDate, $orderNbr));
+		return $result;
 	}
 	public function getIngredientsForCookie($cookieName){
-	$sql = "SELECT * FROM Recipe WHERE cookieName= ?";
-	$result = $this->executeQuery($sql, array($cookieName));
-	return $result;
+		$sql = "SELECT * FROM Recipe WHERE cookieName= ?";
+		$result = $this->executeQuery($sql, array($cookieName));
+		return $result;
 	}
 	public function updateIngredient($ingredient, $newAmount){
-	$sql = "UPDATE Ingredient SET amount = ? WHERE name = ?";
-	$result = $this->executeUpdate($sql, array($newAmount, $ingredient));
-	return $result;
+		$sql = "UPDATE Ingredient SET amount = ? WHERE name = ?";
+		$result = $this->executeUpdate($sql, array($newAmount, $ingredient));
+		return $result;
 	}
 	public function getAllIngredients(){
-	$sql = "SELECT * FROM Ingredient";
-	$result = $this->executeQuery($sql);
-	return $result;
+		$sql = "SELECT * FROM Ingredient";
+		$result = $this->executeQuery($sql);
+		return $result;
 	}
 	public function getCookies(){
-	$sql = "SELECT * FROM Cookie";
-	$result = $this->executeQuery($sql);
-	return $result;
+		$sql = "SELECT * FROM Cookie";
+		$result = $this->executeQuery($sql);
+		return $result;
 	}
 	public function getCustomerNames(){
-	$sql = "SELECT name FROM Customer";
-	$result = $this->executeQuery($sql);
-	return $result;
+		$sql = "SELECT name FROM Customer";
+		$result = $this->executeQuery($sql);
+		return $result;
 	}
 	public function addOrderQuantity($cookieName, $quantity){
-	$sql = "INSERT INTO OrderQuantity (cookieName, orderNbr, quantity) VALUES (?, LAST_INSERT_ID(), ?)";
-	$result = $this->executeUpdate($sql, array($cookieName, $quantity));
-	return $result;
+		$sql = "INSERT INTO OrderQuantity (cookieName, orderNbr, quantity) VALUES (?, LAST_INSERT_ID(), ?)";
+		$result = $this->executeUpdate($sql, array($cookieName, $quantity));
+		return $result;
 	}
 	public function order($customerName, $cookieName, $quantity, $deliveryDate){
 	try{
@@ -132,6 +132,16 @@ class Database {
 		return false;
         }
 	
+	}
+
+	public function getDeliveredDate($status) {
+		if ($status == true) {
+			$sql = "SELECT * FROM Pallet WHERE DeliveredDate IS NOT NULL";
+		} else {
+			$sql = "SELECT * FROM Pallet WHERE DeliveredDate IS NULL";		
+		}
+		$result = $this->executeQuery($sql);
+		return $result;
 	}
 	
 }?>
