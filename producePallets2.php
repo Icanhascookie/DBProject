@@ -2,19 +2,16 @@
 	require_once('database.inc.php');
 	session_start();
 	$db = $_SESSION['db'];
-	$cookieName = isset($_POST['cookie']) ? $_POST['cookie'] : false;
-	$quantity = isset($_POST['quantity']) ? $_POST['quantity'] : false;
-	if(!($cookieName  && $quantity)){
-		echo "Somethings was not selected correctly!";
-		$result = false;
-	}
-	else if(!is_numeric($quantity)){
-		echo "Quantity is not a number!";
+	$orderNumber = isset($_POST['orderNumber']) ? $_POST['orderNumber'] : false;
+	if(!($orderNumber)){
+		echo "Not a valid order number!";
 		$result = false;
 	}
 	else{
 		$db->openConnection();
-		$result = $db->order($customerName, $cookieName, $quantity, $deliveryDate);
+		$order = $db->getOrderQuantity($orderNumber);
+		$nbrOfPallets = $order[0]['quantity'];	
+		$result = $db->producePallet($order[0]['cookieName'],$deliveryDate, $orderNumber, $nbrOfPallets);
 		$db->closeConnection();
 	}
 ?>
@@ -25,9 +22,9 @@ echo "
 <head><title>Production successful</title><head>
 <body><h1>Pallets successfully produced!</h1>
 	<p>
-	Type of cookie: $cookieName
+	The pallets have been produced for order number: $orderNumber 
 	<br>
-	Amount of pallets: $quantity
+	Amount of pallets: $nbrOfPallets
 	<p>
 <form method=post action='index.php'>
 	<input type=submit value='Return to main menu'>
@@ -37,6 +34,6 @@ echo "
 
 }
 else{
-	echo "Something went wrong :( ";
+	echo "Something went wrong :( Maybe you ordered way too many pallets and we can't afford to produce them.";
 }
 ?>
