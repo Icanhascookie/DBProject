@@ -1,4 +1,4 @@
-USE db42;
+
 
 set foreign_key_checks = 0;
 drop table if exists Pallet;
@@ -135,5 +135,12 @@ INSERT INTO Recipe values('Berliner', 'Icing sugar', 100);
 INSERT INTO Recipe values('Berliner', 'Eggs', 50);
 INSERT INTO Recipe values('Berliner', 'Vanilla sugar', 5);
 INSERT INTO Recipe values('Berliner', 'Chocolate', 50);
+
+INSERT INTO Orders values(NULL, 'Finkakor AB', '2015-02-20');
+INSERT INTO OrderQuantity values('Nut ring', 1, 20);
+INSERT INTO Orders values(NULL, 'Smabrod AB', '2015-02-21');
+INSERT INTO OrderQuantity values('Nut cookie', 2, 30);
+INSERT INTO Orders values(NULL, 'Kalaskakor AB', '2015-02-22');
+INSERT INTO OrderQuantity values('Almond delight', 3, 10);
 
 
