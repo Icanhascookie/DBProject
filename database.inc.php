@@ -183,7 +183,6 @@ class Database {
 			break; 
 		case "comp":
 			$sql = "SELECT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE customerName = ?";
-			$searchValue = "%".$searchValue."%";
 			$arr = array($searchValue);
 			break;
 		case "status":
@@ -217,7 +216,6 @@ class Database {
 		}
 
 		$result = $this->executeQuery($sql, $arr);
-		
 		return $result;
 	}
 
