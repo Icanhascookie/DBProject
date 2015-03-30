@@ -2,11 +2,9 @@
 	require_once('database.inc.php');
 	session_start();
 	$db = $_SESSION['db'];
-	$cookieName = isset($_POST['Cookie']) ? $_POST['Cookie'] : false;
-	$customerName = isset($_POST['Customer']) ? $_POST['Customer'] : false;
+	$cookieName = isset($_POST['cookie']) ? $_POST['cookie'] : false;
 	$quantity = isset($_POST['quantity']) ? $_POST['quantity'] : false;
-	$deliveryDate = isset($_POST['deliveryDate']) ? $_POST['deliveryDate'] : false;
-	if(!($cookieName && $customerName && $quantity && $deliveryDate)){
+	if(!($cookieName  && $quantity)){
 		echo "Somethings was not selected correctly!";
 		$result = false;
 	}
@@ -14,7 +12,6 @@
 		echo "Quantity is not a number!";
 		$result = false;
 	}
-	//We probably should check Date as well, but its a bit harder.
 	else{
 		$db->openConnection();
 		$result = $db->order($customerName, $cookieName, $quantity, $deliveryDate);
@@ -22,21 +19,15 @@
 	}
 ?>
 <?php
-if($result != false){
+if($result){
 echo "
 <html>
-<head><title>Order successful!</title><head>
-<body><h1>Order successful! Your order ID is: $result</h1>
+<head><title>Production successful</title><head>
+<body><h1>Pallets successfully produced!</h1>
 	<p>
-	Selected Customer: $customerName
+	Type of cookie: $cookieName
 	<br>
-	Selected Cookie: $cookieName
-	<br>
-	Selected Quantity: $quantity
-	<br>
-	Selected Delivery date: $deliveryDate
-	<br>
-	
+	Amount of pallets: $quantity
 	<p>
 <form method=post action='index.php'>
 	<input type=submit value='Return to main menu'>
