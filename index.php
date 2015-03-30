@@ -32,10 +32,6 @@
 	<input type=submit value="List recipes">
 </form>
 
-<form method = post action = "addRecipes.php">
-	<input type=submit value="Add recipes">
-</form>
-
 <form method = post action = "block.php">
 	<input type=submit value="Block cookies">
 </form>
