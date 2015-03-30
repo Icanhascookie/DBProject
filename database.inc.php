@@ -78,13 +78,34 @@ class Database {
 		$result = $this->executeUpdate($sql, array($deliveredDate, $palletID));
 		return $result;
 	}
-	public function producePallet($cookieName, $productionDate, $deliveredDate, $orderNbr){
-		$sql = "INSERT INTO Pallet (cookieName, productionDate, deliveredDate, orderNbr) VALUES (?,CURDATE(),?,?)";
+	public function producePallet($cookieName, $deliveredDate, $orderNbr, $nbrOfPallets){
+		$this->conn->beginTransaction();
+		
+		$ingredients = $this->getIngredientsForCookie($cookieName);
+		//Checking if there are enough materials for a pallet.
+		foreach($ingredients as $ingredient){
+			$sql = "SELECT amount FROM ingredient WHERE name = ?";
+			$amount = $this->executeQuery($sql, array($ingredient[0]));
+			$needed = $ingredient[1] * 54 * $nbrOfPallets; //15 * 10 * 36 is the number of cookies per pallet divided by 100 because the ingredients are for 100 cookies
+			$left = $amount[0][0]-$needed;
+			if ($left > 0){
+				$sql = "UPDATE ingredient SET amount = ? WHERE name = ?";
+				$this->executeUpdate($sql, array($left, $ingredient[0]));
+			}
+			else{
+				//ROllback!
+				$this->conn->rollBack();
+				return false;
+			}
+		}
+		$sql = "INSERT INTO Pallet (palletID, cookieName, productionDate, deliveredDate, isBlocked, orderNbr) VALUES (NULL,?,CURDATE(),?,0,?)";
 		$result = $this->executeUpdate($sql, array($cookieName, $deliveredDate, $orderNbr));
-		return $result;
+		$this->conn->commit();
+		return true;
 	}
+
 	public function getIngredientsForCookie($cookieName){
-		$sql = "SELECT * FROM Recipe WHERE cookieName= ?";
+		$sql = "SELECT ingredientName, amountUsed FROM Recipe WHERE cookieName= ?";
 		$result = $this->executeQuery($sql, array($cookieName));
 		return $result;
 	}
@@ -130,7 +151,6 @@ class Database {
 		return $result;
 	}
 	public function order($customerName, $cookieName, $quantity, $deliveryDate){
-		$this->conn->beginTransaction();
 		$sql = "INSERT INTO Orders (orderNbr, customerName, deliveryDate) VALUES (NULL, ?, ?)";
 		$this->executeUpdate($sql, array($customerName, $deliveryDate));
 		$last_id = $this->conn->lastInsertId('Orders');
@@ -138,7 +158,11 @@ class Database {
 		$result = $this->executeUpdate($sql, array($cookieName, $quantity));
 		return $last_id;
 	}
-
+	public function getOrderQuantity($orderNbr){
+		$sql = "SELECT cookieName, quantity FROM OrderQuantity WHERE orderNbr = ?";
+		$result = $this->executeQuery($sql, array($orderNbr));
+		return $result;
+	}
 	public function getOrderNumbers(){
 		$sql = "SELECT orderNbr FROM Orders";
 		$result = $this->executeQuery($sql);
