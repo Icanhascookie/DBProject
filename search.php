@@ -20,7 +20,7 @@
 		<input type = submit value="Search">
 	</from>
 
-	------ <br>
+	<br> ------ <br>
 
 	<form action = "searchDone.php" method = "post">
 	Search for pallet by type of Cookie: <?php
@@ -58,17 +58,11 @@
 			
 	</form>
 	------ <br>
-	<form method = post action = "searchDone.php">
-	Search for pallet by Free text: <input type = "text" name="searchValue">
-		<input type = "hidden" name = "type" value = "free">
-		<input type = submit value = "Search">
-	</form>
-	------ <br>
 	<form action = "searchDone.php" method = "post">
         Search for pallet by Status: <?php
         echo "<select name = 'searchValue'><option value = ''>---</option>";
-		echo "<option value='false'>Not Delivered</option>";
-  		echo  "<option value='true'>Delivered</option>";
+		echo "<option value = 'false'>Not Delivered</option>";
+  		echo  "<option value = 'true'>Delivered</option>";
         echo "</select>";
 
         ?>

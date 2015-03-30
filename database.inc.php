@@ -144,4 +144,58 @@ class Database {
 		return $result;
 	}
 	
+	public function search($searchValue,$type,$startTime = null, $endTime = null) {
+		$sql = "";
+		$arr = null;
+		if (!empty($startTime)){
+			if (!$this->validateDate($startTime))
+				return -1;
+		}
+		if (!empty($endTime)){
+			if(!$this->validateDate($endTime))
+				return -1;
+		}
+		switch($type) {
+		case "id":
+			$sql = "SELECT * FROM pallet WHERE palletID = ?";
+			$arr = array($searchValue);
+			break; 
+		case "comp":
+			$sql = "SELECT * FROM pallet WHERE orderNbr = (SELECT orderNbr FROM orders WHERE customerName = ?)";
+			$searchValue = "%".$searchValue."%";
+			$arr = array($searchValue);
+			break;
+		case "status":
+			$sql = "SELECT * FROM pallet WHERE deliveredDate = ?";
+			$arr = array($searchValue);
+			break;
+		case "cookieDate":
+			$searchValue = "%".$searchValue."%";		
+			if (empty($startTime) && empty($endTime)) {
+				$sql = "SELECT DISTINCT * FROM pallet WHERE cookieName LIKE ?";
+				$arr = array($searchValue);
+			} else if (empty($startTime) && !empty ($endTime)) {
+				$sql = "SELECT DISTINCT * FROM pallet WHERE cookieName LIKE ? AND productionDate <= ?";
+                                $arr = array($searchValue, $endTime);
+
+			} else if (!empty($startTime) && empty($endTime)) {
+				$sql = "SELECT DISTINCT * FROM pallet WHERE cookieName LIKE ? AND productionDate >= ?";
+                                $arr = array($searchValue, $startTime);
+
+			} else if (!empty($startTime) && !empty($endTime)) {
+                                $sql = "SELECT DISTINCT * FROM pallet WHERE cookieName LIKE ? AND productionDate >= ? AND productionDate <= ?";
+
+				$arr = array($searchValue, $startTime, $endTime);
+			}
+		}
+
+		$result = $this->executeQuery($sql, $arr);
+		
+		return $result;
+	}
+
+	function validateDate($date, $format = 'Y-m-d H:i:s'){
+	    $d = DateTime::createFromFormat($format, $date);
+	    return $d && $d->format($format) == $date;
+	}
 }?>
