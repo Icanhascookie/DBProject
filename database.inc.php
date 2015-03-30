@@ -68,8 +68,9 @@ class Database {
 		return $result;
 	}
 	public function unblock($cookieName, $startDate, $endDate){
-        $sql = "UPDATE Pallet SET isBlocked=0 WHERE cookieName=$cookieName AND productionDate BETWEEN $startDate AND $endDate" ;
+        $sql = "UPDATE Pallet SET isBlocked=0 WHERE cookieName=? AND productionDate BETWEEN ? AND ?" ;
         $result = $this->executeUpdate($sql, array($cookieName, $startDate, $endDate));
+		
 		return $result;
 	}
 	public function deliverPallet($palletID, $deliveredDate){
@@ -118,14 +119,35 @@ class Database {
 		$result = $this->executeQuery($sql);
 		return $result;
 	}
+	public function getIngredientName(){
+		$sql = "SELECT name FROM Ingredient";
+		$result = $this->executeQuery($sql);
+		return $result;
+	}
 	public function getCookies(){
 		$sql = "SELECT * FROM Cookie";
 		$result = $this->executeQuery($sql);
 		return $result;
 	}
+	public function addCookie($cookieName){
+		$sql = "INSERT INTO Cookie VALUES(?)";
+		$result = $this->executeUpdate($sql, array($cookieName));
+		return $result;
+	}
 	public function getCustomerNames(){
 		$sql = "SELECT name FROM Customer";
 		$result = $this->executeQuery($sql);
+		return $result;
+	}
+
+	public function addOrderQuantity($cookieName, $quantity){
+		$sql = "INSERT INTO OrderQuantity (cookieName, orderNbr, quantity) VALUES (?, LAST_INSERT_ID(), ?)";
+		$result = $this->executeUpdate($sql, array($cookieName, $quantity));
+		return $result;
+	}
+	public function addRecipe($recipeName, $ingredient_name, $quantity){
+		$sql = "INSERT INTO Recipe values(?, ?, ?);";
+		$result = $this->executeUpdate($sql, array($recipeName, $ingredient_name, $quantity));
 		return $result;
 	}
 	public function order($customerName, $cookieName, $quantity, $deliveryDate){
@@ -156,6 +178,16 @@ class Database {
 		$result = $this->executeQuery($sql);
 		return $result;
 	}
+
+	public function checkBlock($status) {
+		if ($status == true) {
+			$sql = "SELECT * FROM Pallet WHERE isBlocked = 1";
+		} else {
+			$sql = "SELECT * FROM Pallet WHERE isBlocked = 0";		
+		}
+		$result = $this->executeQuery($sql);
+		return $result;
+	}
 	
 	public function search($searchValue,$type,$startTime = null, $endTime = null) {
 		$sql = "";
@@ -170,33 +202,39 @@ class Database {
 		}
 		switch($type) {
 		case "id":
-			$sql = "SELECT * FROM pallet WHERE palletID = ?";
+			$sql = "SELECT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE palletID = ?";
 			$arr = array($searchValue);
 			break; 
 		case "comp":
-			$sql = "SELECT * FROM pallet WHERE orderNbr = (SELECT orderNbr FROM orders WHERE customerName = ?)";
+			$sql = "SELECT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE customerName = ?";
 			$searchValue = "%".$searchValue."%";
 			$arr = array($searchValue);
 			break;
 		case "status":
-			$sql = "SELECT * FROM pallet WHERE deliveredDate = ?";
+			if ($searchValue == 1 || $searchValue == 0) {
+				$sql = "SELECT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE isBlocked = ?";
+			} else if ($searchValue == null) {
+				$sql = "SELECT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE deliveredDate IS NULL";
+			} else {
+				$sql = "SELECT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE deliveredDate IS NOT NULL";
+			}
 			$arr = array($searchValue);
 			break;
 		case "cookieDate":
 			$searchValue = "%".$searchValue."%";		
 			if (empty($startTime) && empty($endTime)) {
-				$sql = "SELECT DISTINCT * FROM pallet WHERE cookieName LIKE ?";
+				$sql = "SELECT DISTINCT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE cookieName LIKE ?";
 				$arr = array($searchValue);
 			} else if (empty($startTime) && !empty ($endTime)) {
-				$sql = "SELECT DISTINCT * FROM pallet WHERE cookieName LIKE ? AND productionDate <= ?";
+				$sql = "SELECT DISTINCT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE cookieName LIKE ? AND productionDate <= ?";
                                 $arr = array($searchValue, $endTime);
 
 			} else if (!empty($startTime) && empty($endTime)) {
-				$sql = "SELECT DISTINCT * FROM pallet WHERE cookieName LIKE ? AND productionDate >= ?";
+				$sql = "SELECT DISTINCT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE cookieName LIKE ? AND productionDate >= ?";
                                 $arr = array($searchValue, $startTime);
 
 			} else if (!empty($startTime) && !empty($endTime)) {
-                                $sql = "SELECT DISTINCT * FROM pallet WHERE cookieName LIKE ? AND productionDate >= ? AND productionDate <= ?";
+                                $sql = "SELECT DISTINCT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE cookieName LIKE ? AND productionDate >= ? AND productionDate <= ?";
 
 				$arr = array($searchValue, $startTime, $endTime);
 			}

@@ -26,7 +26,7 @@
 		if ($result == -1) {
 			print "Invalid input in Date/time field";
 		} else if ((!empty($id)|| ($type=='cookieDate')) && (count($result) > 0) && $result != -1){
-			echo "<table border = '1'><tr><th>ID</th><th>TimeCreated</th><th>recipeName</th><th>status</th><th>timeDelivered</th><th>customer</th><th>timeLabeled</th></tr>";
+			echo "<table border = '1'><tr><th>palletID</th><th>cookieName</th><th>productionDate</th><th>deliveredDate</th><th>isBlocked</th><th>orderNbr</th><th>customerName</th></tr>";
 			foreach ($result as $row) {
 				print ($row[0] != null) ? "<td>".$row[0]."</td>": "<td>Not specified</td>";
 				print ($row[1] != null) ? "<td>".$row[1]."</td>": "<td>Not specified</td>";
