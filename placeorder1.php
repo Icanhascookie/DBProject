@@ -1,12 +1,9 @@
 <?php
 	require_once('database.inc.php');
-	
 	session_start();
 	$db = $_SESSION['db'];
 	$db->openConnection();
-	
-	$CustomerNames = $db->getCustomerNames();
-	$_SESSION['CustomerNames'] = $CustomerNames;
+	$customerNames = $db->getCustomerNames();
 	$db->closeConnection();
 ?>
 
@@ -20,7 +17,7 @@
 		<select name="Customer" size=10>
 		<?php
 			$first = true;
-			foreach ($CustomerNames as $name) {
+			foreach ($customerNames as $name) {
 				if ($first) {
 					print "<option selected>";
 					$first = false;
@@ -33,5 +30,9 @@
 		</select>		
 		<input type=submit value="Select customer">
 	</form>
+	<p>
+	<form method=post action="index.php">
+	<input type=submit value="Return to main menu">
+</form>
 </body>
 </html>

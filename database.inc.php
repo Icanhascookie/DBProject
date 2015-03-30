@@ -107,5 +107,31 @@ class Database {
 	$result = $this->executeQuery($sql);
 	return $result;
 	}
-	//I was thinking we do most of the logic in the php files that call these functions. Not sure if thats a good way to do it.
+	public function addOrderQuantity($cookieName, $quantity){
+	$sql = "INSERT INTO OrderQuantity (cookieName, orderNbr, quantity) VALUES (?, LAST_INSERT_ID(), ?)";
+	$result = $this->executeUpdate($sql, array($cookieName, $quantity));
+	return $result;
+	}
+	public function order($customerName, $cookieName, $quantity, $deliveryDate){
+	try{
+		echo $customerName;
+		$this->conn->beginTransaction();
+		$sql = "INSERT INTO Orders (orderNbr, customerName, deliveryDate) VALUES (NULL, ?, ?)";
+		$this->executeUpdate($sql, array($customerName, $deliveryDate));
+		if($this->addOrderQuantity($cookieName, $quantity) == false){
+			$this->conn->rollBack();
+			return false;
+		}
+		else{
+			$this->conn->commit();
+			return true;
+		}
+	}catch (PDOException $e) {
+		$error = "*** Internal error: " . $e->getMessage() . "<p>" . $query;
+		die($error);
+		return false;
+        }
+	
+	}
+	
 }?>

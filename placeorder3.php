@@ -1,10 +1,9 @@
 <?php
-	session_start();
-	$customerName = $_SESSION['Customer'];
-	$cookieName = $_REQUEST['Cookie'];
-
-	$quantity = isset($_POST['quantity']) ? $_POST['quantity'] : false;
-	$deliverDate = isset($_POST['deliverDate']) ? $_POST['deliverDate'] : false;
+	$cookieName = isset($_POST['Cookie']) ? $_POST['Cookie'] : false;
+	$customerName = isset($_POST['Customer']) ? $_POST['Customer'] : false;
+	if($customerName == false || $cookieName == false){
+		echo "Cookie/Customer was not selected!";
+	}
 ?>
 
 <html>
@@ -15,14 +14,19 @@
 	<br>
 	Selected Cookie: <?php print $cookieName ?>
 	<br>
-	<form method=post action="placeorder3.php">
-		order quantity:<br>
+	<form method=post action="placeorder4.php">
+		Order quantity:<br>
 		<input type="text" name="quantity"><br>
-		deliver date (yyyy-mm-dd): <br>
-		<input type="datetime" name="deliverDate"><br>
-	</form>
-	<form method=post action="placeorder3.php">
+		Delivery date (yyyy-mm-dd): <br>
+		<input type="datetime" name="deliveryDate"><br>
+		<input type="hidden" name="Customer" value="<?php echo $customerName ?> "/>
+		<input type="hidden" name="Cookie" value="<?php echo $cookieName ?> "/>
 		<input type=submit value="Place order">
 	</form>
+	
+	<p>
+	<form method=post action="index.php">
+	<input type=submit value="Return to main menu">
+</form>
 </body>
 </html>

@@ -3,14 +3,15 @@
 	
 	session_start();
 	$db = $_SESSION['db'];
-	$customerName = $_REQUEST['Customer'];
-	
-	$db->openConnection();
-	
-	$cookieName = $db->getCookies();
-	$_SESSION['cookieName'] = $cookieName;
-	$_SESSION['Customer'] = $customerName;
-	$db->closeConnection();
+	$customerName = isset($_POST['Customer']) ? $_POST['Customer'] : false;
+	if($customerName){
+		$db->openConnection();
+		$cookieName = $db->getCookies();
+		$db->closeConnection();
+	}
+	else{
+		echo "Customer was not selected!";
+	}
 ?>
 
 <html>
@@ -34,8 +35,13 @@
 				print $name[0];
 			}
 		?>
-		</select>		
+		</select>
+		<input type="hidden" name="Customer" value="<?php echo $customerName ?> "/>
 		<input type=submit value="Select cookie">
 	</form>
+	<p>
+	<form method=post action="index.php">
+	<input type=submit value="Return to main menu">
+</form>
 </body>
 </html>
