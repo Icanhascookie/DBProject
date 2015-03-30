@@ -47,5 +47,10 @@
 <form method = post action = "search.php">
 	<input type=submit value="Search">
 </form>
+
+<form method = post action = "producePallets.php">
+	<input type=submit value="Produce Pallets">
+</form>
+
 </body>
 </html>

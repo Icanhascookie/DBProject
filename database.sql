@@ -32,7 +32,7 @@ CREATE TABLE Ingredient (
 CREATE TABLE Orders (
 	orderNbr INT auto_increment,
     customerName VARCHAR(50) NOT NULL,
-    deliveryDate DATE NOT NULL,
+    deliveryDate DATETIME NOT NULL,
     PRIMARY KEY (orderNbr),
 	FOREIGN KEY (customerName) REFERENCES Customer(name)
 );
@@ -63,8 +63,8 @@ CREATE TABLE OrderQuantity (
 CREATE TABLE Pallet (
     palletID INT auto_increment,
     cookieName VARCHAR(50) NOT NULL,
-	productionDate DATE,
-	deliveredDate DATE,
+	productionDate DATETIME,
+	deliveredDate DATETIME,
 	isBlocked INT NOT NULL,
 	orderNbr INT,
     PRIMARY KEY (palletID),

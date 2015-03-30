@@ -68,8 +68,9 @@ class Database {
 		return $result;
 	}
 	public function unblock($cookieName, $startDate, $endDate){
-        $sql = "UPDATE Pallet SET isBlocked=0 WHERE cookieName=$cookieName AND productionDate BETWEEN $startDate AND $endDate" ;
+        $sql = "UPDATE Pallet SET isBlocked=0 WHERE cookieName=? AND productionDate BETWEEN ? AND ?" ;
         $result = $this->executeUpdate($sql, array($cookieName, $startDate, $endDate));
+		
 		return $result;
 	}
 	public function deliverPallet($palletID, $deliveredDate){
@@ -78,8 +79,8 @@ class Database {
 		return $result;
 	}
 	public function producePallet($cookieName, $productionDate, $deliveredDate, $orderNbr){
-		$sql = "INSERT INTO Pallet (cookieName, productionDate, deliveredDate, orderNbr) VALUES (?,?,?,?)";
-		$result = $this->executeUpdate($sql, array($cookieName, $productionDate, $deliveredDate, $orderNbr));
+		$sql = "INSERT INTO Pallet (cookieName, productionDate, deliveredDate, orderNbr) VALUES (?,CURDATE(),?,?)";
+		$result = $this->executeUpdate($sql, array($cookieName, $deliveredDate, $orderNbr));
 		return $result;
 	}
 	public function getIngredientsForCookie($cookieName){
@@ -117,6 +118,7 @@ class Database {
 		$result = $this->executeQuery($sql);
 		return $result;
 	}
+
 	public function addOrderQuantity($cookieName, $quantity){
 		$sql = "INSERT INTO OrderQuantity (cookieName, orderNbr, quantity) VALUES (?, LAST_INSERT_ID(), ?)";
 		$result = $this->executeUpdate($sql, array($cookieName, $quantity));
@@ -128,25 +130,19 @@ class Database {
 		return $result;
 	}
 	public function order($customerName, $cookieName, $quantity, $deliveryDate){
-	try{
-		echo $customerName;
 		$this->conn->beginTransaction();
 		$sql = "INSERT INTO Orders (orderNbr, customerName, deliveryDate) VALUES (NULL, ?, ?)";
 		$this->executeUpdate($sql, array($customerName, $deliveryDate));
-		if($this->addOrderQuantity($cookieName, $quantity) == false){
-			$this->conn->rollBack();
-			return false;
-		}
-		else{
-			$this->conn->commit();
-			return true;
-		}
-	}catch (PDOException $e) {
-		$error = "*** Internal error: " . $e->getMessage() . "<p>" . $query;
-		die($error);
-		return false;
-        }
-	
+		$last_id = $this->conn->lastInsertId('Orders');
+		$sql = "INSERT INTO OrderQuantity (cookieName, orderNbr, quantity) VALUES (?, LAST_INSERT_ID(), ?)";
+		$result = $this->executeUpdate($sql, array($cookieName, $quantity));
+		return $last_id;
+	}
+
+	public function getOrderNumbers(){
+		$sql = "SELECT orderNbr FROM Orders";
+		$result = $this->executeQuery($sql);
+		return $result;
 	}
 
 	public function getDeliveredDate($status) {
@@ -158,5 +154,75 @@ class Database {
 		$result = $this->executeQuery($sql);
 		return $result;
 	}
+
+	public function checkBlock($status) {
+		if ($status == true) {
+			$sql = "SELECT * FROM Pallet WHERE isBlocked = 1";
+		} else {
+			$sql = "SELECT * FROM Pallet WHERE isBlocked = 0";		
+		}
+		$result = $this->executeQuery($sql);
+		return $result;
+	}
 	
+	public function search($searchValue,$type,$startTime = null, $endTime = null) {
+		$sql = "";
+		$arr = null;
+		if (!empty($startTime)){
+			if (!$this->validateDate($startTime))
+				return -1;
+		}
+		if (!empty($endTime)){
+			if(!$this->validateDate($endTime))
+				return -1;
+		}
+		switch($type) {
+		case "id":
+			$sql = "SELECT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE palletID = ?";
+			$arr = array($searchValue);
+			break; 
+		case "comp":
+			$sql = "SELECT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE customerName = ?";
+			$searchValue = "%".$searchValue."%";
+			$arr = array($searchValue);
+			break;
+		case "status":
+			if ($searchValue == 1 || $searchValue == 0) {
+				$sql = "SELECT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE isBlocked = ?";
+			} else if ($searchValue == null) {
+				$sql = "SELECT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE deliveredDate IS NULL";
+			} else {
+				$sql = "SELECT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE deliveredDate IS NOT NULL";
+			}
+			$arr = array($searchValue);
+			break;
+		case "cookieDate":
+			$searchValue = "%".$searchValue."%";		
+			if (empty($startTime) && empty($endTime)) {
+				$sql = "SELECT DISTINCT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE cookieName LIKE ?";
+				$arr = array($searchValue);
+			} else if (empty($startTime) && !empty ($endTime)) {
+				$sql = "SELECT DISTINCT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE cookieName LIKE ? AND productionDate <= ?";
+                                $arr = array($searchValue, $endTime);
+
+			} else if (!empty($startTime) && empty($endTime)) {
+				$sql = "SELECT DISTINCT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE cookieName LIKE ? AND productionDate >= ?";
+                                $arr = array($searchValue, $startTime);
+
+			} else if (!empty($startTime) && !empty($endTime)) {
+                                $sql = "SELECT DISTINCT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE cookieName LIKE ? AND productionDate >= ? AND productionDate <= ?";
+
+				$arr = array($searchValue, $startTime, $endTime);
+			}
+		}
+
+		$result = $this->executeQuery($sql, $arr);
+		
+		return $result;
+	}
+
+	function validateDate($date, $format = 'Y-m-d H:i:s'){
+	    $d = DateTime::createFromFormat($format, $date);
+	    return $d && $d->format($format) == $date;
+	}
 }?>

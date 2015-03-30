@@ -7,7 +7,6 @@
 	$db->openConnection();
 	$cookies = $db->getCookies();	
 	$customers = $db->getCustomerNames();
-	//$status = $db->
 	$db->closeConnection();
 ?>
 
@@ -17,10 +16,10 @@
 	<form method = post action = "searchDone.php">
 		Search for pallet by Pallet ID: <input type = "text" name = "searchValue">
 		<input type = "hidden" name = "type" value = "id">
-		<input type = submit value="Search">
-	</from>
+		<input type = submit value = "Search">
+	</form>
 
-	------ <br>
+	<br> ------ <br>
 
 	<form action = "searchDone.php" method = "post">
 	Search for pallet by type of Cookie: <?php
@@ -58,17 +57,13 @@
 			
 	</form>
 	------ <br>
-	<form method = post action = "searchDone.php">
-	Search for pallet by Free text: <input type = "text" name="searchValue">
-		<input type = "hidden" name = "type" value = "free">
-		<input type = submit value = "Search">
-	</form>
-	------ <br>
 	<form action = "searchDone.php" method = "post">
         Search for pallet by Status: <?php
         echo "<select name = 'searchValue'><option value = ''>---</option>";
-		echo "<option value='false'>Not Delivered</option>";
-  		echo  "<option value='true'>Delivered</option>";
+		echo "<option value = 'null'>Not Delivered</option>";
+  		echo "<option value = '2'>Delivered</option>";
+		echo "<option value = '1'>Blocked</option>";
+		echo "<option value = '0'>Not Blocked</option>";
         echo "</select>";
 
         ?>
