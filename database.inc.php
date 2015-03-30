@@ -97,9 +97,19 @@ class Database {
 		$result = $this->executeQuery($sql);
 		return $result;
 	}
+	public function getIngredientName(){
+		$sql = "SELECT name FROM Ingredient";
+		$result = $this->executeQuery($sql);
+		return $result;
+	}
 	public function getCookies(){
 		$sql = "SELECT * FROM Cookie";
 		$result = $this->executeQuery($sql);
+		return $result;
+	}
+	public function addCookie($cookieName){
+		$sql = "INSERT INTO Cookie VALUES(?)";
+		$result = $this->executeUpdate($sql, array($cookieName));
 		return $result;
 	}
 	public function getCustomerNames(){
@@ -110,6 +120,11 @@ class Database {
 	public function addOrderQuantity($cookieName, $quantity){
 		$sql = "INSERT INTO OrderQuantity (cookieName, orderNbr, quantity) VALUES (?, LAST_INSERT_ID(), ?)";
 		$result = $this->executeUpdate($sql, array($cookieName, $quantity));
+		return $result;
+	}
+	public function addRecipe($recipeName, $ingredient_name, $quantity){
+		$sql = "INSERT INTO Recipe values(?, ?, ?);";
+		$result = $this->executeUpdate($sql, array($recipeName, $ingredient_name, $quantity));
 		return $result;
 	}
 	public function order($customerName, $cookieName, $quantity, $deliveryDate){
