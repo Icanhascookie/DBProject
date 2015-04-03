@@ -65,42 +65,186 @@ class Database {
 	public function block($cookieName, $startDate, $endDate){
         $sql = "UPDATE Pallet SET isBlocked=1 WHERE cookieName = ? AND productionDate BETWEEN ? AND ?" ;
         $result = $this->executeUpdate($sql, array($cookieName, $startDate, $endDate));
-	return $result;
+		return $result;
 	}
 	public function unblock($cookieName, $startDate, $endDate){
-        $sql = "UPDATE Pallet SET isBlocked=0 WHERE cookieName=$cookieName AND productionDate BETWEEN $startDate AND $endDate" ;
+        $sql = "UPDATE Pallet SET isBlocked=0 WHERE cookieName=? AND productionDate BETWEEN ? AND ?" ;
         $result = $this->executeUpdate($sql, array($cookieName, $startDate, $endDate));
-	return $result;
+		
+		return $result;
 	}
 	public function deliverPallet($palletID, $deliveredDate){
-	$sql = "UPDATE Pallet SET deliveredDate = ? WHERE palletID = ?";
-	$result = $this->executeUpdate($sql, array($deliveredDate, $palletID));
-	return $result;
+		$sql = "UPDATE Pallet SET deliveredDate = ? WHERE palletID = ?";
+		$result = $this->executeUpdate($sql, array($deliveredDate, $palletID));
+		return $result;
 	}
-	public function producePallet($cookieName, $productionDate, $deliveredDate, $orderNbr){
-	$sql = "INSERT INTO Pallet (cookieName, productionDate, deliveredDate, orderNbr) VALUES (?,?,?,?)";
-	$result = $this->executeUpdate($sql, array($cookieName, $productionDate, $deliveredDate, $orderNbr));
-	return $result;
+	public function producePallet($cookieName, $deliveredDate, $orderNbr, $nbrOfPallets){
+		$this->conn->beginTransaction();
+		
+		$ingredients = $this->getIngredientsForCookie($cookieName);
+		//Checking if there are enough materials for a pallet.
+		foreach($ingredients as $ingredient){
+			$sql = "SELECT amount FROM ingredient WHERE name = ?";
+			$amount = $this->executeQuery($sql, array($ingredient[0]));
+			$needed = $ingredient[1] * 54 * $nbrOfPallets; //15 * 10 * 36 is the number of cookies per pallet divided by 100 because the ingredients are for 100 cookies
+			$left = $amount[0][0]-$needed;
+			if ($left > 0){
+				$sql = "UPDATE ingredient SET amount = ? WHERE name = ?";
+				$this->executeUpdate($sql, array($left, $ingredient[0]));
+			}
+			else{
+				//ROllback!
+				$this->conn->rollBack();
+				return false;
+			}
+		}
+		$sql = "INSERT INTO Pallet (palletID, cookieName, productionDate, deliveredDate, isBlocked, orderNbr) VALUES (NULL,?,CURDATE(),?,0,?)";
+		$result = $this->executeUpdate($sql, array($cookieName, $deliveredDate, $orderNbr));
+		$this->conn->commit();
+		return true;
 	}
+
 	public function getIngredientsForCookie($cookieName){
-	$sql = "SELECT * FROM Recipe WHERE cookieName= ?";
-	$result = $this->executeQuery($sql, array($cookieName));
-	return $result;
+		$sql = "SELECT ingredientName, amountUsed FROM Recipe WHERE cookieName= ?";
+		$result = $this->executeQuery($sql, array($cookieName));
+		return $result;
 	}
 	public function updateIngredient($ingredient, $newAmount){
-	$sql = "UPDATE Ingredient SET amount = ? WHERE name = ?";
-	$result = $this->executeUpdate($sql, array($newAmount, $ingredient));
-	return $result;
+		$sql = "UPDATE Ingredient SET amount = ? WHERE name = ?";
+		$result = $this->executeUpdate($sql, array($newAmount, $ingredient));
+		return $result;
 	}
 	public function getAllIngredients(){
-	$sql = "SELECT * FROM Ingredient";
-	$result = $this->executeQuery($sql);
-	return $result;
+		$sql = "SELECT * FROM Ingredient";
+		$result = $this->executeQuery($sql);
+		return $result;
+	}
+	public function getIngredientName(){
+		$sql = "SELECT name FROM Ingredient";
+		$result = $this->executeQuery($sql);
+		return $result;
 	}
 	public function getCookies(){
-	$sql = "SELECT * FROM Cookie";
-	$result = $this->executeQuery($sql);
-	return $result;
+		$sql = "SELECT * FROM Cookie";
+		$result = $this->executeQuery($sql);
+		return $result;
 	}
-	//I was thinking we do most of the logic in the php files that call these functions. Not sure if thats a good way to do it.
+	public function addCookie($cookieName){
+		$sql = "INSERT INTO Cookie VALUES(?)";
+		$result = $this->executeUpdate($sql, array($cookieName));
+		return $result;
+	}
+	public function getCustomerNames(){
+		$sql = "SELECT name FROM Customer";
+		$result = $this->executeQuery($sql);
+		return $result;
+	}
+
+	public function addOrderQuantity($cookieName, $quantity){
+		$sql = "INSERT INTO OrderQuantity (cookieName, orderNbr, quantity) VALUES (?, LAST_INSERT_ID(), ?)";
+		$result = $this->executeUpdate($sql, array($cookieName, $quantity));
+		return $result;
+	}
+	public function addRecipe($recipeName, $ingredient_name, $quantity){
+		$sql = "INSERT INTO Recipe values(?, ?, ?);";
+		$result = $this->executeUpdate($sql, array($recipeName, $ingredient_name, $quantity));
+		return $result;
+	}
+	public function order($customerName, $cookieName, $quantity, $deliveryDate){
+		$sql = "INSERT INTO Orders (orderNbr, customerName, deliveryDate) VALUES (NULL, ?, ?)";
+		$this->executeUpdate($sql, array($customerName, $deliveryDate));
+		$last_id = $this->conn->lastInsertId('Orders');
+		$sql = "INSERT INTO OrderQuantity (cookieName, orderNbr, quantity) VALUES (?, LAST_INSERT_ID(), ?)";
+		$result = $this->executeUpdate($sql, array($cookieName, $quantity));
+		return $last_id;
+	}
+	public function getOrderQuantity($orderNbr){
+		$sql = "SELECT cookieName, quantity FROM OrderQuantity WHERE orderNbr = ?";
+		$result = $this->executeQuery($sql, array($orderNbr));
+		return $result;
+	}
+	public function getOrderNumbers(){
+		$sql = "SELECT orderNbr FROM Orders";
+		$result = $this->executeQuery($sql);
+		return $result;
+	}
+
+	public function getDeliveredDate($status) {
+		if ($status == true) {
+			$sql = "SELECT * FROM Pallet WHERE DeliveredDate IS NOT NULL";
+		} else {
+			$sql = "SELECT * FROM Pallet WHERE DeliveredDate IS NULL";		
+		}
+		$result = $this->executeQuery($sql);
+		return $result;
+	}
+
+	public function checkBlock($status) {
+		if ($status == true) {
+			$sql = "SELECT * FROM Pallet WHERE isBlocked = 1";
+		} else {
+			$sql = "SELECT * FROM Pallet WHERE isBlocked = 0";		
+		}
+		$result = $this->executeQuery($sql);
+		return $result;
+	}
+	
+	public function search($searchValue,$type,$startTime = null, $endTime = null) {
+		$sql = "";
+		$arr = null;
+		if (!empty($startTime)){
+			if (!$this->validateDate($startTime))
+				return -1;
+		}
+		if (!empty($endTime)){
+			if(!$this->validateDate($endTime))
+				return -1;
+		}
+		switch($type) {
+		case "id":
+			$sql = "SELECT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE palletID = ?";
+			$arr = array($searchValue);
+			break; 
+		case "comp":
+			$sql = "SELECT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE customerName = ?";
+			$arr = array($searchValue);
+			break;
+		case "status":
+			if ($searchValue == 1 || $searchValue == 0) {
+				$sql = "SELECT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE isBlocked = ?";
+			} else if ($searchValue == null) {
+				$sql = "SELECT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE deliveredDate IS NULL";
+			} else {
+				$sql = "SELECT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE deliveredDate IS NOT NULL";
+			}
+			$arr = array($searchValue);
+			break;
+		case "cookieDate":
+			$searchValue = "%".$searchValue."%";		
+			if (empty($startTime) && empty($endTime)) {
+				$sql = "SELECT DISTINCT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE cookieName LIKE ?";
+				$arr = array($searchValue);
+			} else if (empty($startTime) && !empty ($endTime)) {
+				$sql = "SELECT DISTINCT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE cookieName LIKE ? AND productionDate <= ?";
+                                $arr = array($searchValue, $endTime);
+
+			} else if (!empty($startTime) && empty($endTime)) {
+				$sql = "SELECT DISTINCT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE cookieName LIKE ? AND productionDate >= ?";
+                                $arr = array($searchValue, $startTime);
+
+			} else if (!empty($startTime) && !empty($endTime)) {
+                                $sql = "SELECT DISTINCT pallet.*, customerName FROM pallet left outer join orders ON pallet.orderNbr = orders.orderNbr WHERE cookieName LIKE ? AND productionDate >= ? AND productionDate <= ?";
+
+				$arr = array($searchValue, $startTime, $endTime);
+			}
+		}
+
+		$result = $this->executeQuery($sql, $arr);
+		return $result;
+	}
+
+	function validateDate($date, $format = 'Y-m-d H:i:s'){
+	    $d = DateTime::createFromFormat($format, $date);
+	    return $d && $d->format($format) == $date;
+	}
 }?>

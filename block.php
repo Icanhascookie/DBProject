@@ -1,21 +1,24 @@
 
 <?php 
-
-$cookieName = isset($_POST['cName']) ? $_POST['cName'] : false;
-$startDate = isset($_POST['startDate']) ? $_POST['startDate'] : false;
-$endDate = isset($_POST['endDate']) ? $_POST['endDate'] : false;
-if($cookieName && $startDate && $endDate){
-if(isset($_POST['Block'])){
-	$db->block($cookieName, $startDate, $endDate);
-	$db->closeConnection();
-}
-else if(isset($_POST['Unblock'])){
-	$db->unblock($cookieName, $startDate, $endDate);
-	$db->closeConnection();
-}
-else{
-	echo "invalid form";
-}
+	require_once('database.inc.php');
+	session_start();
+	$db = $_SESSION['db'];
+	$db->openConnection();
+	$cookieName = isset($_POST['cName']) ? $_POST['cName'] : false;
+	$startDate = isset($_POST['startDate']) ? $_POST['startDate'] : false;
+	$endDate = isset($_POST['endDate']) ? $_POST['endDate'] : false;
+	if($cookieName && $startDate && $endDate){
+	if(isset($_POST['Block'])){
+		$db->block($cookieName, $startDate, $endDate);
+		$db->closeConnection();
+	}
+	else if(isset($_POST['Unblock'])){
+		$db->unblock($cookieName, $startDate, $endDate);
+		$db->closeConnection();
+	}
+	else{
+		echo "invalid form";
+	}
 }
 ?>
 <html>

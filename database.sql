@@ -1,4 +1,4 @@
-USE db42;
+
 
 set foreign_key_checks = 0;
 drop table if exists Pallet;
@@ -32,7 +32,7 @@ CREATE TABLE Ingredient (
 CREATE TABLE Orders (
 	orderNbr INT auto_increment,
     customerName VARCHAR(50) NOT NULL,
-    deliveryDate DATE NOT NULL,
+    deliveryDate DATETIME NOT NULL,
     PRIMARY KEY (orderNbr),
 	FOREIGN KEY (customerName) REFERENCES Customer(name)
 );
@@ -63,8 +63,8 @@ CREATE TABLE OrderQuantity (
 CREATE TABLE Pallet (
     palletID INT auto_increment,
     cookieName VARCHAR(50) NOT NULL,
-	productionDate DATE,
-	deliveredDate DATE,
+	productionDate DATETIME,
+	deliveredDate DATETIME,
 	isBlocked INT NOT NULL,
 	orderNbr INT,
     PRIMARY KEY (palletID),
@@ -135,5 +135,12 @@ INSERT INTO Recipe values('Berliner', 'Icing sugar', 100);
 INSERT INTO Recipe values('Berliner', 'Eggs', 50);
 INSERT INTO Recipe values('Berliner', 'Vanilla sugar', 5);
 INSERT INTO Recipe values('Berliner', 'Chocolate', 50);
+
+INSERT INTO Orders values(NULL, 'Finkakor AB', '2015-02-20');
+INSERT INTO OrderQuantity values('Nut ring', 1, 2);
+INSERT INTO Orders values(NULL, 'Smabrod AB', '2015-02-21');
+INSERT INTO OrderQuantity values('Nut cookie', 2, 3);
+INSERT INTO Orders values(NULL, 'Kalaskakor AB', '2015-02-22');
+INSERT INTO OrderQuantity values('Almond delight', 3, 1);
 
 

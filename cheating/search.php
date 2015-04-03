@@ -63,13 +63,13 @@
 	--- or ---<br>
 	<form method=post action="searchDone.php">
 	Free text: <input type="text" name="searchValue">
-		<input type="hidden" name="type" value="free">
+		<input type="hidden" name ="type" value="free">
 		<input type=submit value="Search">
 	</form>
 	--- or --- <br>
 	<form action="searchDone.php" method="post">
         status: <?php
-        echo "<select name='searchValue'><option value=''>---</option>";
+        echo "<select name = 'searchValue'><option value = ''>---</option>";
 
         foreach ($status as $row) {
                 echo "<option value='". $row[0]. "'>" . $row[0] ."</option>";
